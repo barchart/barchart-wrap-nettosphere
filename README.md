@@ -1,4 +1,4 @@
-barchart-wrap-atmosphere
+barchart-wrap-nettosphere
 ========================
 
-Atmosphere package without optional dependencies
+Nettosphere package without optional dependencies

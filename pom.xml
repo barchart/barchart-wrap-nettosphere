@@ -1,0 +1,177 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.1.1</version>
+	</parent>
+
+	<groupId>com.barchart.wrap</groupId>
+	<artifactId>barchart-wrap-nettosphere</artifactId>
+	<version>1.4.2-build001-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-wrap-nettosphere</url>
+		<connection>scm:git:git://github.com/barchart/barchart-wrap-nettosphere.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-wrap-nettosphere.git</developerConnection>
+	</scm>
+
+	<description>
+		bundle wrapper for Nettosphere
+	</description>
+
+	<properties>
+		<nettosphereVersion>1.4.2</nettosphereVersion>
+		<unpackSource>${project.build.directory}/unpack-source</unpackSource>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>nettosphere</artifactId>
+			<version>${nettosphereVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.atmosphere</groupId>
+					<artifactId>atmosphere-compat-jbossweb</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.atmosphere</groupId>
+					<artifactId>atmosphere-compat-tomcat</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.atmosphere</groupId>
+					<artifactId>atmosphere-compat-tomcat7</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<!-- unpack source -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-source</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<classifier>sources</classifier>
+							<includeScope>compile</includeScope>
+							<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+							<outputDirectory>${unpackSource}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- register source folder -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>register-source</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<phase>prepare-package</phase>
+						<configuration>
+							<sources>
+								<path>${unpackSource}</path>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- attach source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- produce bundle -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<_failok>true</_failok>
+						<_removeheaders>
+							Service-Component,
+							Include-Resource,
+							Private-Package,
+							Ignore-Package,
+						</_removeheaders>
+						<Import-Package>
+							org.atmosphere.*,
+						</Import-Package>
+						<Embed-Dependency>
+							org.atmosphere.*;scope=compile;inline=true,
+						</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<Export-Package>
+							org.atmosphere.*;version=${nettosphereVersion}
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[0,)</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
+
+	</build>
+
+</project>
