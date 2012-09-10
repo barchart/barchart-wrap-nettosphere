@@ -127,7 +127,7 @@
 							Ignore-Package,
 						</_removeheaders>
 						<Import-Package>
-							org.atmosphere.*,
+							org.atmosphere.*,org.slf4j.*,org.jboss.netty.*,javax.servlet.*
 						</Import-Package>
 						<Embed-Dependency>
 							org.atmosphere.*;scope=compile;inline=true,
