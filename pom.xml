@@ -10,7 +10,7 @@
 
 	<groupId>com.barchart.wrap</groupId>
 	<artifactId>barchart-wrap-nettosphere</artifactId>
-	<version>1.4.2-build003-SNAPSHOT</version>
+	<version>1.4.2-build003</version>
 	<packaging>bundle</packaging>
 
 	<scm>
