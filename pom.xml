@@ -25,6 +25,7 @@
 
 	<properties>
 		<nettosphereVersion>1.4.2</nettosphereVersion>
+		<unpackSource>${project.build.directory}/unpack-source</unpackSource>
 	</properties>
 
 	<dependencies>
@@ -41,6 +42,81 @@
 
 		<plugins>
 
+			<!-- unpack source -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-source</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<classifier>sources</classifier>
+							<includeGroupIds>org.atmosphere</includeGroupIds>
+							<!--
+							<includes>org/atmosphere/**</includes>
+							<includeScope>compile</includeScope>
+							-->
+							<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+							<outputDirectory>${unpackSource}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- register source folder -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>register-source</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<phase>prepare-package</phase>
+						<configuration>
+							<sources>
+								<path>${unpackSource}</path>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- attach source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- attach javadoc jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- produce bundle -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -55,7 +131,16 @@
 							Ignore-Package,
 						</_removeheaders>
 						<Import-Package>
-							org.atmosphere.*,org.slf4j.*,org.jboss.netty.*,javax.servlet.*
+							org.atmosphere.*,
+							org.slf4j.*,
+							org.jboss.netty.*,
+							javax.servlet.*,
+							com.sun;resolution=optional,
+							org.glassfish.grizzly;resolution=optional,
+							org.apache.catalina;resolution=optional,
+							org.apache.tomcat;resolution=optional,
+							org.eclipse.jetty;resolution=optional,
+							org.jboss.servlet;resolution=optional,
 						</Import-Package>
 						<Export-Package>
 							org.atmosphere.*;version=${nettosphereVersion}
@@ -65,6 +150,36 @@
 			</plugin>
 
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[0,)</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
 
 	</build>
 
