@@ -10,7 +10,7 @@
 
 	<groupId>com.barchart.wrap</groupId>
 	<artifactId>barchart-wrap-nettosphere</artifactId>
-	<version>1.4.2-build005-SNAPSHOT</version>
+	<version>1.4.3-build005-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
@@ -24,7 +24,7 @@
 	</description>
 
 	<properties>
-		<nettosphereVersion>1.4.2</nettosphereVersion>
+		<nettosphereVersion>1.4.3-SNAPSHOT</nettosphereVersion>
 		<unpackSource>${project.build.directory}/unpack-source</unpackSource>
 	</properties>
 
